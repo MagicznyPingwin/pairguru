@@ -3,3 +3,21 @@
   = @movie.description
 - if user_signed_in?
   %p= link_to 'Email me details about this movie', send_info_movie_path(@movie), class: 'btn btn-sm btn-default'
+%div
+  - if @comments.empty?
+    %h1= "No comments"
+  -else
+    - @comments.each do |comment|
+      .jumbotron
+        %h3= comment.content
+        %p.text-right= comment.user.name
+
+- if user_signed_in?
+  - if @movie.comments.where(user_id: current_user.id).empty?
+    = simple_form_for @new_comment, class: "form-group", url: create_comment_movie_path do |f|
+      = f.input :content, class: "form-control"
+      = f.association :movie, :as => :hidden, :input_html => { :value => params[:id] }
+      = f.association :user, :as => :hidden, :input_html => { :value => current_user.id }
+      = f.submit "Create comment", class: "btn-success btn btn-xl"
+  - else
+    %h1.text-center= "You can add only one comment per movie."

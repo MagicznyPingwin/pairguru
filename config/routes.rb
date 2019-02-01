@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'users/ranking'
   devise_for :users
 
   root "home#welcome"
@@ -10,6 +11,7 @@ Rails.application.routes.draw do
   resources :movies, only: [:index, :show] do
     member do
       get :send_info
+      post :create_comment
     end
     collection do
       get :export
